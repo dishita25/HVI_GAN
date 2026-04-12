@@ -21,6 +21,7 @@ class LOLDatasetFromFolder(data.Dataset):
 
         folder = self.data_dir+'/low'
         folder2= self.data_dir+'/high'
+        print("Checking path:", folder)
         data_filenames = [join(folder, x) for x in listdir(folder) if is_image_file(x)]
         data_filenames2 = [join(folder2, x) for x in listdir(folder2) if is_image_file(x)]
         num = len(data_filenames)
