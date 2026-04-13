@@ -85,7 +85,7 @@ if __name__ == '__main__':
         raise Exception("No GPU found, or need to change CUDA_VISIBLE_DEVICES number")
     
     if not os.path.exists('./HVI_GAN/output'):          
-            os.mkdir('./HVI_GAN/output')  
+            os.makedirs('./HVI_GAN/output')
     
     norm_size = True
     num_workers = 1
