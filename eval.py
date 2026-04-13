@@ -6,7 +6,7 @@ from data.data import *
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from loss.losses import *
-from net.CIDNet import CIDNet
+from net.HVI_GAN_Generator import HVIGANGenerator
 
 
 def eval(model, testing_data_loader, model_path, output_folder,norm_size=True,LOL=False,v2=False,unpaired=False,alpha=1.0,gamma=1.0):
@@ -31,7 +31,7 @@ def eval(model, testing_data_loader, model_path, output_folder,norm_size=True,LO
                 input, name, h, w = batch[0], batch[1], batch[2], batch[3]
             
             input = input.cuda()
-            output = model(input**gamma) 
+            output = model(input**gamma)[0]
             
         if not os.path.exists(output_folder):          
             os.mkdir(output_folder)  
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     num_workers = 1
     alpha = None
     if ep.lol:
-        eval_data = DataLoader(dataset=get_eval_set("./datasets/LOLdataset/eval15/low"), num_workers=num_workers, batch_size=1, shuffle=False)
+        eval_data = DataLoader(dataset=get_eval_set("/kaggle/input/datasets/soumikrakshit/lol-dataset/lol_dataset/eval15/low"), num_workers=num_workers, batch_size=1, shuffle=False)
         output_folder = './output/LOLv1/'
         if ep.perc:
             weight_path = './weights/LOLv1/w_perc.pth'
@@ -161,6 +161,6 @@ if __name__ == '__main__':
         norm_size = False
         weight_path = ep.unpaired_weights
         
-    eval_net = CIDNet().cuda()
+    eval_net = HVIGANGenerator().cuda()
     eval(eval_net, eval_data, weight_path, output_folder,norm_size=norm_size,LOL=ep.lol,v2=ep.lol_v2_real,unpaired=ep.unpaired,alpha=alpha,gamma=ep.gamma)
 
