@@ -84,15 +84,15 @@ if __name__ == '__main__':
     if cuda and not torch.cuda.is_available():
         raise Exception("No GPU found, or need to change CUDA_VISIBLE_DEVICES number")
     
-    if not os.path.exists('./output'):          
-            os.mkdir('./output')  
+    if not os.path.exists('./HVI_GAN/output'):          
+            os.mkdir('./HVI_GAN/output')  
     
     norm_size = True
     num_workers = 1
     alpha = None
     if ep.lol:
         eval_data = DataLoader(dataset=get_eval_set("/kaggle/input/datasets/soumikrakshit/lol-dataset/lol_dataset/eval15/low"), num_workers=num_workers, batch_size=1, shuffle=False)
-        output_folder = './output/LOLv1/'
+        output_folder = './HVI_GAN/output/LOLv1/'
         if ep.perc:
             weight_path = './weights/LOLv1/w_perc.pth'
         else:
