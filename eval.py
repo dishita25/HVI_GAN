@@ -54,7 +54,7 @@ if __name__ == '__main__':
     
     eval_parser = argparse.ArgumentParser(description='Eval')
     eval_parser.add_argument('--perc', action='store_true', help='trained with perceptual loss')
-    eval_parser.add_argument('--lol', action='store_true', help='output lolv1 dataset')
+    eval_parser.add_argument('--lol', default=True, action='store_true', help='output lolv1 dataset')
     eval_parser.add_argument('--lol_v2_real', action='store_true', help='output lol_v2_real dataset')
     eval_parser.add_argument('--lol_v2_syn', action='store_true', help='output lol_v2_syn dataset')
     eval_parser.add_argument('--SICE_grad', action='store_true', help='output SICE_grad dataset')
@@ -84,15 +84,15 @@ if __name__ == '__main__':
     if cuda and not torch.cuda.is_available():
         raise Exception("No GPU found, or need to change CUDA_VISIBLE_DEVICES number")
     
-    if not os.path.exists('./HVI_GAN/output'):          
-            os.makedirs('./HVI_GAN/output')
+    if not os.path.exists('./output/LOLv1/'):          
+            os.makedirs('./output/LOLv1/')
     
     norm_size = True
     num_workers = 1
     alpha = None
     if ep.lol:
         eval_data = DataLoader(dataset=get_eval_set("/kaggle/input/datasets/soumikrakshit/lol-dataset/lol_dataset/eval15/low"), num_workers=num_workers, batch_size=1, shuffle=False)
-        output_folder = './HVI_GAN/output/LOLv1/'
+        output_folder = './output/LOLv1/'
         if ep.perc:
             weight_path = './weights/LOLv1/w_perc.pth'
         else:
