@@ -61,9 +61,7 @@ def option():
 
     parser.add_argument('--val_folder', default='./results/', help='Location to save validation datasets')
 
-    # -----------------------------------------------------------------------
     # Original reconstruction loss weights (applied to BOTH RGB and HVI)
-    # -----------------------------------------------------------------------
     parser.add_argument('--HVI_weight', type=float, default=1.0,
                         help='Weight for the HVI-space reconstruction losses')
     parser.add_argument('--L1_weight', type=float, default=1.0)
@@ -74,27 +72,17 @@ def option():
     parser.add_argument('--P_weight',  type=float, default=1e-2,
                         help='Weight for perceptual loss')
 
-    # -----------------------------------------------------------------------
     # GAN-specific weights
-    # -----------------------------------------------------------------------
-    parser.add_argument('--adv_weight_rgb', type=float, default=0.01,
-                        help='Weight for the RGB adversarial loss term in G')
-    parser.add_argument('--adv_weight_hvi', type=float, default=0.01,
-                        help='Weight for the HVI adversarial loss term in G')
-    parser.add_argument('--D_rgb_weight', type=float, default=1.0,
-                        help='Weight scalar for the RGB discriminator loss')
-    parser.add_argument('--D_hvi_weight', type=float, default=1.0,
-                        help='Weight scalar for the HVI discriminator loss')
+    parser.add_argument('--adv_weight_rgb', type=float, default=0.01, help='Weight for the RGB adversarial loss term in G')
+    parser.add_argument('--adv_weight_hvi', type=float, default=0.01, help='Weight for the HVI adversarial loss term in G')
+    parser.add_argument('--D_rgb_weight', type=float, default=1.0, help='Weight scalar for the RGB discriminator loss')
+    parser.add_argument('--D_hvi_weight', type=float, default=1.0, help='Weight scalar for the HVI discriminator loss')
 
     # How many generator steps per discriminator step (n_critic-style)
-    parser.add_argument('--n_critic', type=int, default=1,
-                        help='Train discriminator every n_critic generator steps')
+    parser.add_argument('--n_critic', type=int, default=1, help='Train discriminator every n_critic generator steps')
 
-    # Warm-up the GAN signal: start adversarial training after this many epochs
-    # to let the generator produce reasonable images before the discriminator
-    # sees them (prevents early mode collapse).
-    parser.add_argument('--gan_start_epoch', type=int, default=10,
-                        help='Epoch at which adversarial losses are switched on')
+    # Warm-up the GAN signal: start adversarial training after this many epochs before the discriminator sees them (prevents early mode collapse).
+    parser.add_argument('--gan_start_epoch', type=int, default=10, help='Epoch at which adversarial losses are switched on')
 
     # use random gamma function (enhancement curve) to improve generalisation
     parser.add_argument('--gamma', type=_str2bool, default=False)
@@ -102,15 +90,19 @@ def option():
     parser.add_argument('--end_gamma', type=int, default=120)
 
     # auto grad
-    parser.add_argument('--grad_detect', type=_str2bool, default=False,
-                        help='if gradient explosion occurs, turn on')
-    parser.add_argument('--grad_clip', type=_str2bool, default=True,
-                        help='if gradient fluctuates too much, turn on')
+    parser.add_argument('--grad_detect', type=_str2bool, default=False, help='if gradient explosion occurs, turn on')
+    parser.add_argument('--grad_clip', type=_str2bool, default=True, help='if gradient fluctuates too much, turn on')
 
     # choose which dataset you want to train
     parser.add_argument('--dataset', type=str, default='lol_v1',
-                        choices=['lol_v1', 'lolv2_real', 'lolv2_syn',
-                                 'lol_blur', 'SID', 'SICE_mix',
-                                 'SICE_grad', 'fivek'])
+    choices=['lol_v1',
+             'lolv2_real',
+             'lolv2_syn',
+             'lol_blur', 
+             'SID',
+             'SICE_mix',
+             'SICE_grad',
+             'fivek'],
+    help='Select the dataset to train on (default: %(default)s)')
 
     return parser
