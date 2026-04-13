@@ -1,16 +1,14 @@
 """
-HVI_GAN_Discriminator.py
-------------------------
-Two 70×70 PatchGAN discriminators – one for the RGB colour space and one for
+Two 70x70 PatchGAN discriminators - one for the RGB colour space and one for
 the HVI colour space.  They share the same network structure but operate on
 different input domains.
 
-Architecture (classic 70×70 PatchGAN, Isola et al. 2017):
+Architecture (classic 70x70 PatchGAN, Isola et al. 2017):
     Conv(k4, s2) → LeakyReLU
     Conv(k4, s2) + InstanceNorm → LeakyReLU
     Conv(k4, s2) + InstanceNorm → LeakyReLU
     Conv(k4, s1) + InstanceNorm → LeakyReLU
-    Conv(k4, s1) → 1-channel patch output (no sigmoid – used with LSGAN)
+    Conv(k4, s1) → 1-channel patch output (no sigmoid - used with LSGAN)
 
 The design is deliberately identical for both domains so that the training
 pipeline can treat them symmetrically.
@@ -20,15 +18,7 @@ import torch
 import torch.nn as nn
 
 
-# --------------------------------------------------------------------------- #
-# Helper: one conv-norm-activation block
-# --------------------------------------------------------------------------- #
-def _disc_block(
-    in_ch: int,
-    out_ch: int,
-    stride: int = 2,
-    use_norm: bool = True,
-) -> nn.Sequential:
+def _disc_block(in_ch: int, out_ch: int, stride: int = 2, use_norm: bool = True) -> nn.Sequential:
     layers: list[nn.Module] = [
         nn.Conv2d(in_ch, out_ch, kernel_size=4, stride=stride, padding=1, bias=not use_norm),
     ]
@@ -38,12 +28,10 @@ def _disc_block(
     return nn.Sequential(*layers)
 
 
-# --------------------------------------------------------------------------- #
 # Shared PatchGAN backbone
-# --------------------------------------------------------------------------- #
 class PatchGANDiscriminator(nn.Module):
     """
-    70×70 PatchGAN discriminator.
+    70x70 PatchGAN discriminator.
 
     Args:
         in_channels (int): Number of input channels (3 for RGB or HVI).
@@ -52,12 +40,7 @@ class PatchGANDiscriminator(nn.Module):
         max_channels (int): Channel cap.
     """
 
-    def __init__(
-        self,
-        in_channels: int = 3,
-        base_channels: int = 64,
-        max_channels: int = 512,
-    ):
+    def __init__(self, in_channels: int = 3, base_channels: int = 64, max_channels: int = 512):
         super().__init__()
 
         ch = base_channels
@@ -66,13 +49,13 @@ class PatchGANDiscriminator(nn.Module):
         self.layer1 = _disc_block(in_channels, ch, stride=2, use_norm=False)
 
         # Layers 2-4 – stride-2 with norm
-        self.layer2 = _disc_block(ch,        min(ch * 2, max_channels), stride=2)
+        self.layer2 = _disc_block(ch, min(ch * 2, max_channels), stride=2)
         ch = min(ch * 2, max_channels)
 
-        self.layer3 = _disc_block(ch,        min(ch * 2, max_channels), stride=2)
+        self.layer3 = _disc_block(ch, min(ch * 2, max_channels), stride=2)
         ch = min(ch * 2, max_channels)
 
-        self.layer4 = _disc_block(ch,        min(ch * 2, max_channels), stride=1)
+        self.layer4 = _disc_block(ch, min(ch * 2, max_channels), stride=1)
         ch = min(ch * 2, max_channels)
 
         # Final conv → 1-channel patch score (no activation; used with LSGAN)
@@ -102,9 +85,6 @@ class PatchGANDiscriminator(nn.Module):
         return self.out(x)
 
 
-# --------------------------------------------------------------------------- #
-# Named aliases – makes imports and logging readable
-# --------------------------------------------------------------------------- #
 class RGBDiscriminator(PatchGANDiscriminator):
     """Discriminates between real and generated images in RGB space."""
 
