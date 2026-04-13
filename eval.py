@@ -76,6 +76,7 @@ if __name__ == '__main__':
     eval_parser.add_argument('--alpha', type=float, default=1.0)
     eval_parser.add_argument('--gamma', type=float, default=1.0)
     eval_parser.add_argument('--unpaired_weights', type=str, default='./weights/LOLv2_syn/w_perc.pth')
+    eval_parser.add_argument('--LOL_weights', type=str, default='./weights/train/G_epoch_20.pth')
 
     ep = eval_parser.parse_args()
 
@@ -96,7 +97,7 @@ if __name__ == '__main__':
         if ep.perc:
             weight_path = './weights/LOLv1/w_perc.pth'
         else:
-            weight_path = './weights/LOLv1/wo_perc.pth'
+            weight_path = ep.LOL_weights
         
             
     elif ep.lol_v2_real:
